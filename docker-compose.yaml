@@ -1,0 +1,55 @@
+services:
+
+  app:
+    image: ghcr.io/hargata/lubelogger:latest
+    container_name: lubeloggerapp
+    restart: unless-stopped
+    volumes:
+      - config:/App/config
+      - data:/App/data
+      - translations:/App/wwwroot/translations
+      - documents:/App/wwwroot/documents
+      - images:/App/wwwroot/images
+      - temp:/App/wwwroot/temp
+      - log:/App/log
+      - keys:/root/.aspnet/DataProtection-Keys
+    ports:
+      - 8280:8080
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:14
+    container_name: lubeloggerdb
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - postgres:/var/lib/postgresql/data
+      - /etc/localtime:/etc/localtime:ro
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: unless-stopped
+    ports:
+      - "8888:80"
+    env_file:
+      - .env
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
+
+volumes:
+  config:
+  data:
+  translations:
+  documents:
+  images:
+  temp:
+  log:
+  keys:
+  postgres:
+  pgadmin-data:
